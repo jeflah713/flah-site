@@ -52,25 +52,39 @@ const mockProducts: Product[] = [
   },
 ];
 
+const stars = Array.from({ length: 200 }).map(() => ({
+  cx: Math.random() * 1920,
+  cy: Math.random() * 800, // Only in the sky area
+  r: Math.random() * 1.5 + 0.5,
+  duration: Math.random() * 2 + 1,
+  delay: Math.random() * 2,
+}));
+
 
 const App: React.FC = () => {
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-[#F0F8FF] text-slate-700">
+    <div className="relative min-h-screen overflow-x-hidden bg-[#0D1A26] text-slate-200">
       {/* Frutiger Aero Background */}
       <div className="absolute inset-0 z-0 w-full h-full">
         <svg width="100%" height="100%" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="aeroSky" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#87CEEB" />
-              <stop offset="100%" stopColor="#00BFFF" />
+              <stop offset="0%" stopColor="#2c0b4d" />
+              <stop offset="50%" stopColor="#1e2a78" />
+              <stop offset="100%" stopColor="#0D1A26" />
             </linearGradient>
             <linearGradient id="aeroHills" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#98FB98" />
-              <stop offset="100%" stopColor="#3CB371" />
+              <stop offset="0%" stopColor="#1E5631" />
+              <stop offset="100%" stopColor="#0E3B20" />
             </linearGradient>
              <radialGradient id="eggGradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
               <stop offset="0%" stopColor="rgba(224, 255, 255, 0.9)" />
               <stop offset="100%" stopColor="rgba(173, 216, 230, 0.5)" />
+            </radialGradient>
+            <radialGradient id="moonGradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                <stop offset="70%" stopColor="#E0FFFF" />
+                <stop offset="90%" stopColor="#A0D8EF" />
+                <stop offset="100%" stopColor="#4682B4" />
             </radialGradient>
             <filter id="futuristicWarmth">
                 <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="1" stitchTiles="stitch" result="noise"/>
@@ -100,6 +114,42 @@ const App: React.FC = () => {
                     <feMergeNode in="SourceGraphic" />
                 </feMerge>
             </filter>
+            <filter id="moonGlow">
+                <feGaussianBlur stdDeviation="20" result="blur" />
+                 <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                </feMerge>
+            </filter>
+
+            {/* Alien Filters & Shapes */}
+            <filter id="alienGlow">
+              <feGaussianBlur stdDeviation="25" />
+            </filter>
+            <filter id="smokeFilter">
+                <feTurbulence type="fractalNoise" baseFrequency="0.015 0.035" numOctaves="3" seed="42" result="turbulence">
+                    <animate attributeName="baseFrequency" dur="10s" values="0.015 0.035;0.02 0.04;0.015 0.035" repeatCount="indefinite" />
+                </feTurbulence>
+                <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="20" xChannelSelector="R" yChannelSelector="A" />
+                <feGaussianBlur stdDeviation="7" />
+                <feColorMatrix type="matrix" values="1 0 0 0 0 
+                                                    1 0 0 0 0 
+                                                    1 0 0 0 0 
+                                                    0 0 0 2 -0.2" />
+            </filter>
+            <g id="smoking-alien-shape">
+                <path d="M 150 50 C 50 80, 20 180, 100 250 C 180 320, 280 320, 350 250 C 420 180, 400 80, 300 50 C 250 20, 200 20, 150 50 Z" fill="rgba(106, 90, 205, 0.25)" />
+                <ellipse cx="170" cy="150" rx="35" ry="55" fill="rgba(0,0,0,0.7)" transform="rotate(-10, 170, 150)" />
+                <ellipse cx="280" cy="150" rx="35" ry="55" fill="rgba(0,0,0,0.7)" transform="rotate(10, 280, 150)" />
+                <g transform="translate(300, 230) rotate(15)">
+                    <rect x="0" y="0" width="120" height="18" rx="7" fill="rgba(245, 245, 245, 0.6)" />
+                    <circle cx="120" cy="9" r="12" fill="orangered" id="cig-cherry">
+                        <animate attributeName="r" values="12;14;12" dur="2.5s" repeatCount="indefinite" />
+                        <animate attributeName="opacity" values="1;0.6;1" dur="2.5s" repeatCount="indefinite" />
+                    </circle>
+                </g>
+            </g>
+            <path id="smoke-path" d="M 0 0 Q 15 -50 30 -100 T 40 -200 T 50 -350" stroke="rgba(200, 210, 255, 0.4)" strokeWidth="60" fill="none" strokeLinecap="round"/>
 
             {/* UFO and Cow Shapes */}
             <g id="cow-shape" transform="translate(-15, -12)">
@@ -114,6 +164,11 @@ const App: React.FC = () => {
               <circle cx="90" cy="12" r="3" fill="hotpink"><animate attributeName="opacity" values="1;0.2;1" dur="1s" repeatCount="indefinite" /></circle>
             </g>
             <polygon id="beam-shape" points="35,22 65,22 85,150 15,150" fill="#AFEEEE" style={{transformOrigin: '50% 22px'}} />
+            <g id="alien-ship-shape">
+                <path d="M 0 5 C 5 0, 15 0, 20 5 L 20 15 C 15 20, 5 20, 0 15 Z" fill="#B0C4DE" />
+                <circle cx="10" cy="10" r="6" fill="#7DF9FF" />
+                <path d="M 20 7 H 25 L 22 10 L 25 13 H 20 Z" fill="#98FB98" />
+            </g>
 
             <style>
                 {`
@@ -191,15 +246,87 @@ const App: React.FC = () => {
                   40% { transform: translateY(-180px) rotate(-20deg) scale(0.5); opacity: 0.8; }
                   45%, 100% { transform: translateY(-220px) rotate(-20deg) scale(0); opacity: 0; }
                 }
+                
+                @keyframes twinkle {
+                  0%, 100% { opacity: 0.3; }
+                  50% { opacity: 1; }
+                }
+
+                .star {
+                  animation-name: twinkle;
+                  animation-timing-function: ease-in-out;
+                  animation-iteration-count: infinite;
+                }
+
+                @keyframes docking-maneuver {
+                    0% { transform: translate(0, 0) rotate(0deg); }
+                    50% { transform: translate(10px, -5px) rotate(5deg); }
+                    100% { transform: translate(0, 0) rotate(0deg); }
+                }
+                @keyframes docking-maneuver-2 {
+                    0% { transform: translate(0, 0) rotate(0deg); }
+                    50% { transform: translate(-8px, 8px) rotate(-3deg); }
+                    100% { transform: translate(0, 0) rotate(0deg); }
+                }
+
+                @keyframes pulse-dock {
+                    0%, 100% { stroke: #7DF9FF; stroke-width: 2; opacity: 1; }
+                    50% { stroke: white; stroke-width: 3; opacity: 0.7; }
+                }
                 `}
             </style>
           </defs>
 
           <g filter="url(#futuristicWarmth)">
             <rect width="1920" height="1080" fill="url(#aeroSky)" />
+            {/* Stars */}
+            <g>
+              {stars.map((star, i) => (
+                <circle
+                  key={i}
+                  className="star"
+                  cx={star.cx}
+                  cy={star.cy}
+                  r={star.r}
+                  fill="white"
+                  style={{
+                    animationDuration: `${star.duration}s`,
+                    animationDelay: `${star.delay}s`,
+                  }}
+                />
+              ))}
+            </g>
+
+            {/* Giant Smoking Alien */}
+            <g transform="translate(100, 80) scale(1.1)">
+                <g filter="url(#alienGlow)" opacity="0.6">
+                    <use href="#smoking-alien-shape" />
+                </g>
+                <g transform="translate(415, 245) rotate(15)">
+                    <use href="#smoke-path" filter="url(#smokeFilter)" />
+                </g>
+            </g>
+
+             {/* Moon and Docking Scene */}
+            <g transform="translate(1600 250)">
+                <g filter="url(#moonGlow)">
+                    <circle cx="0" cy="0" r="150" fill="url(#moonGradient)" opacity="0.9" />
+                    <circle cx="-50" cy="-60" r="30" fill="white" opacity="0.05" />
+                    <circle cx="40" cy="20" r="50" fill="white" opacity="0.05" />
+                    <circle cx="-30" cy="70" r="20" fill="white" opacity="0.03" />
+                </g>
+                <circle cx="0" cy="0" r="10" fill="none" style={{ animation: 'pulse-dock 4s infinite ease-in-out' }} />
+                <g style={{animation: 'docking-maneuver 8s infinite ease-in-out'}}>
+                    <use href="#alien-ship-shape" transform="translate(-100 -120) scale(2.5) rotate(45)" />
+                </g>
+                 <g style={{animation: 'docking-maneuver-2 10s infinite ease-in-out', animationDelay: '-2s'}}>
+                    <use href="#alien-ship-shape" transform="translate(80 -30) scale(2) rotate(-60)" />
+                </g>
+            </g>
+            
             <path d="M -100 800 C 400 600, 600 900, 1100 750 C 1600 600, 1800 850, 2020 800 V 1080 H -100 Z" fill="url(#aeroHills)" opacity="0.9" />
             <path d="M -100 850 C 300 750, 500 950, 1000 850 C 1500 750, 1700 900, 2020 850 V 1080 H -100 Z" fill="url(#aeroHills)" opacity="0.6" />
-             <g id="grid" stroke="rgba(255,255,255,0.15)" strokeWidth="2">
+             <g id="grid" stroke="rgba(255,255,255,0.1)" strokeWidth="2">
                 <path d="M-100 880 H 2020" />
                 <path d="M-100 940 H 2020" />
                 <path d="M-100 1020 H 2020" />

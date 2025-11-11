@@ -16,10 +16,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <div className="p-6">
         <div className="flex justify-between items-start mb-2">
           <div>
-            <p className="text-sm font-semibold text-blue-600 uppercase">{product.type}</p>
-            <h4 className="text-2xl font-bold text-slate-800">{product.name}</h4>
+            <p className="text-sm font-semibold text-cyan-400 uppercase">{product.type}</p>
+            <h4 className="text-2xl font-bold text-slate-100">{product.name}</h4>
           </div>
-          <p className="text-2xl font-bold text-green-600 bg-white/50 rounded-lg px-3 py-1">${product.price}</p>
+          <p className="text-2xl font-bold text-green-400 bg-black/20 rounded-lg px-3 py-1">${product.price}</p>
         </div>
         <button 
           onClick={handleBuy}

@@ -25,7 +25,7 @@ const FeaturedVideos: React.FC = () => {
                 className="w-full h-full"
               ></iframe>
             </div>
-             <p className="mt-4 text-center font-semibold text-gray-800 truncate px-2">{video.title}</p>
+             <p className="mt-4 text-center font-semibold text-slate-200 truncate px-2">{video.title}</p>
           </div>
         ))}
       </div>

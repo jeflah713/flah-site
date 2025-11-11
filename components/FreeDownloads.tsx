@@ -30,7 +30,7 @@ const FreeDownloads: React.FC = () => {
             placeholder="Enter your email address"
             aria-label="Email address for free downloads"
             required
-            className="flex-grow px-5 py-3 rounded-full border-2 border-white/50 bg-white/50 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-green-300 transition-all duration-300"
+            className="flex-grow px-5 py-3 rounded-full border-2 border-white/30 bg-black/20 text-slate-200 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-green-300 transition-all duration-300"
           />
           <button
             type="submit"
